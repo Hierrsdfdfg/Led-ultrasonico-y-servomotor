@@ -1,0 +1,53 @@
+#include <Servo.h>
+
+Servo miServo;
+
+const int ledPin = 5;
+const int trigPin = 10;
+const int echoPin = 11;
+const int servoPin = 6;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  miServo.attach(servoPin);
+  Serial.begin(9600);
+}
+
+void loop() {
+ 
+  long duracion;
+  int distancia;
+
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+
+duracion = pulseIn(echoPin, HIGH);
+distancia = duracion * 0.034 / 2;
+
+int distanciaLimitada = constrain(distancia, 2, 30);
+int angulo = map(distanciaLimitada, 2, 30, 0, 180);
+
+miServo.write(angulo);
+
+Serial.print(" Distancia: ");
+Serial.print(distancia);
+Serial.print(" cm | Angulo: ");
+Serial.print(angulo);
+ for(int brillo = 0; brillo <= 255; brillo += 5){
+    analogWrite(ledPin, brillo);
+    delay(30);
+  }
+
+  for(int brillo = 255; brillo >= 0; brillo -= 5){
+    analogWrite(ledPin, brillo);
+    delay(30);
+  }
+delay(50); 
+
+}
